@@ -53,7 +53,10 @@ import org.webrtc.SessionDescription
  * Messages to other party (with local Ice candidates and answer SDP) can
  * be sent after WebSocket connection is established.
  */
-public class WebSocketRTCClient(private val events: AppRTCClient.SignalingEvents, private val executor: LooperExecutor) : AppRTCClient, WebSocketChannelEvents {
+public class WebSocketRTCClient(
+  private val events: AppRTCClient.SignalingEvents,
+  private val executor: util.LooperExecutor
+): AppRTCClient, WebSocketChannelEvents {
 
   private enum class ConnectionState {
     NEW
@@ -229,6 +232,7 @@ public class WebSocketRTCClient(private val events: AppRTCClient.SignalingEvents
             reportError("Sending ICE candidate in non connected state.")
             return
           }
+
           sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString())
           if (connectionParameters!!.loopback) {
             events.onRemoteIceCandidate(candidate)
