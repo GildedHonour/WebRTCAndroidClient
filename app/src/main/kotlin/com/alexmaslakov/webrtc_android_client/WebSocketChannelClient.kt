@@ -170,8 +170,7 @@ public class WebSocketChannelClient(
         try {
           json.put("cmd", "send")
           json.put("msg", message)
-          message = json.toString()
-          Log.d(TAG, "C->WSS: " + message)
+          Log.d(TAG, "C->WSS: " + json.toString())
           ws!!.sendTextMessage(message)
         } catch (e: JSONException) {
           reportError("WebSocket send JSON error: " + e.getMessage())
@@ -218,6 +217,7 @@ public class WebSocketChannelClient(
         }
       }
     }
+
     Log.d(TAG, "Disonnecting WebSocket done.")
   }
 
@@ -242,9 +242,9 @@ public class WebSocketChannelClient(
         reportError("WS " + method + " error: " + errorMessage)
       }
 
-      override fun onHttpComplete(response: String) {
-      }
+      override fun onHttpComplete(response: String) { }
     })
+
     httpConnection.send()
   }
 

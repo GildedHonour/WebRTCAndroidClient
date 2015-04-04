@@ -78,31 +78,31 @@ public class SettingsActivity : Activity(), OnSharedPreferenceChangeListener {
   }
 
   override fun onResume() {
-    super.onResume()
+    super<Activity>.onResume()
     // Set summary to be the user-description for the selected value
     val sharedPreferences = settingsFragment!!.getPreferenceScreen().getSharedPreferences()
     sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-    updateSummaryB(sharedPreferences, keyprefVideoCall)
-    updateSummary(sharedPreferences, keyprefResolution)
-    updateSummary(sharedPreferences, keyprefFps)
-    updateSummary(sharedPreferences, keyprefStartVideoBitrateType)
-    updateSummaryBitrate(sharedPreferences, keyprefStartVideoBitrateValue)
+    updateSummaryB(sharedPreferences, keyprefVideoCall!!)
+    updateSummary(sharedPreferences, keyprefResolution!!)
+    updateSummary(sharedPreferences, keyprefFps!!)
+    updateSummary(sharedPreferences, keyprefStartVideoBitrateType!!)
+    updateSummaryBitrate(sharedPreferences, keyprefStartVideoBitrateValue!!)
     setVideoBitrateEnable(sharedPreferences)
-    updateSummary(sharedPreferences, keyPrefVideoCodec)
-    updateSummaryB(sharedPreferences, keyprefHwCodec)
+    updateSummary(sharedPreferences, keyPrefVideoCodec!!)
+    updateSummaryB(sharedPreferences, keyprefHwCodec!!)
 
-    updateSummary(sharedPreferences, keyprefStartAudioBitrateType)
-    updateSummaryBitrate(sharedPreferences, keyprefStartAudioBitrateValue)
+    updateSummary(sharedPreferences, keyprefStartAudioBitrateType!!)
+    updateSummaryBitrate(sharedPreferences, keyprefStartAudioBitrateValue!!)
     setAudioBitrateEnable(sharedPreferences)
-    updateSummary(sharedPreferences, keyPrefAudioCodec)
+    updateSummary(sharedPreferences, keyPrefAudioCodec!!)
 
-    updateSummaryB(sharedPreferences, keyprefCpuUsageDetection)
-    updateSummary(sharedPreferences, keyPrefRoomServerUrl)
-    updateSummaryB(sharedPreferences, keyPrefDisplayHud)
+    updateSummaryB(sharedPreferences, keyprefCpuUsageDetection!!)
+    updateSummary(sharedPreferences, keyPrefRoomServerUrl!!)
+    updateSummaryB(sharedPreferences, keyPrefDisplayHud!!)
   }
 
   override fun onPause() {
-    super.onPause()
+    super<Activity>.onPause()
     val sharedPreferences = settingsFragment!!.getPreferenceScreen().getSharedPreferences()
     sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
   }

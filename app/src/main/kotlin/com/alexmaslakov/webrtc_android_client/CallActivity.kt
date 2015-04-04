@@ -80,8 +80,8 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
 
   // Controls
   private var videoView: GLSurfaceView? = null
-  var callFragment: CallFragment
-  var hudFragment: HudFragment
+  var callFragment: CallFragment? = null
+  var hudFragment: HudFragment? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -288,11 +288,14 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
           val delta = System.currentTimeMillis() - callStartedTimeMs
           Log.d(TAG, "Creating peer connection factory, delay=" + delta + "ms")
           peerConnectionClient = PeerConnectionClient()
-          peerConnectionClient!!.createPeerConnectionFactory(this@CallActivity, VideoRendererGui.getEGLContext(), peerConnectionParameters, this@CallActivity)
+          peerConnectionClient!!.createPeerConnectionFactory(this@CallActivity,
+            VideoRendererGui.getEGLContext(), peerConnectionParameters!!, this@CallActivity
+          )
         }
+
         if (signalingParameters != null) {
           Log.w(TAG, "EGL context is ready after room connection.")
-          onConnectedToRoomInternal(signalingParameters)
+          onConnectedToRoomInternal(signalingParameters!!)
         }
       }
     })
@@ -455,24 +458,19 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
       override fun run() {
         if (appRtcClient != null) {
           logAndToast("Sending " + sdp.type + ", delay=" + delta + "ms")
-          if (signalingParameters!!.initiator) {
-            appRtcClient!!.sendOfferSdp(sdp)
-          } else {
-            appRtcClient!!.sendAnswerSdp(sdp)
-          }
+          if (signalingParameters!!.initiator) appRtcClient!!.sendOfferSdp(sdp)
+          else appRtcClient!!.sendAnswerSdp(sdp)
         }
       }
     })
   }
 
   override fun onIceCandidate(candidate: IceCandidate) {
-    runOnUiThread(object : Runnable {
-      override fun run() {
-        if (appRtcClient != null) {
-          appRtcClient!!.sendLocalIceCandidate(candidate)
-        }
+    runOnUiThread {
+      if (appRtcClient != null) {
+        appRtcClient!!.sendLocalIceCandidate(candidate)
       }
-    })
+    }
   }
 
   override fun onIceConnected() {

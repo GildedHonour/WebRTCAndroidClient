@@ -249,13 +249,13 @@ public class WebSocketRTCClient(
   // WebSocketChannelEvents interface implementation.
   // All events are called by WebSocketChannelClient on a local looper thread
   // (passed to WebSocket client constructor).
-  override fun onWebSocketMessage(msg: String) {
+  override fun onWebSocketMessage(message: String) {
     if (wsClient!!.state != WebSocketConnectionState.REGISTERED) {
       Log.e(TAG, "Got WebSocket message in non registered state.")
       return
     }
     try {
-      var json = JSONObject(msg)
+      var json = JSONObject(message)
       val msgText = json.getString("msg")
       val errorText = json.optString("error")
       if (msgText.length() > 0) {
@@ -269,25 +269,25 @@ public class WebSocketRTCClient(
             val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
             events.onRemoteDescription(sdp)
           } else {
-            reportError("Received answer for call initiator: " + msg)
+            reportError("Received answer for call initiator: " + message)
           }
         } else if (type == "offer") {
           if (!initiator) {
             val sdp = SessionDescription(SessionDescription.Type.fromCanonicalForm(type), json.getString("sdp"))
             events.onRemoteDescription(sdp)
           } else {
-            reportError("Received offer for call receiver: " + msg)
+            reportError("Received offer for call receiver: " + message)
           }
         } else if (type == "bye") {
           events.onChannelClose()
         } else {
-          reportError("Unexpected WebSocket message: " + msg)
+          reportError("Unexpected WebSocket message: " + message)
         }
       } else {
         if (errorText != null && errorText.length() > 0) {
           reportError("WebSocket error message: " + errorText)
         } else {
-          reportError("Unexpected WebSocket message: " + msg)
+          reportError("Unexpected WebSocket message: " + message)
         }
       }
     } catch (e: JSONException) {

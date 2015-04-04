@@ -27,7 +27,7 @@
 
 package com.alexmaslakov.webrtc_android_client
 
-import com.alexmaslakov.webrtc_android_client.AppRTCUtils
+import com.alexmaslakov.webrtc_android_client.util.AppRTCUtils
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -213,17 +213,18 @@ public class AppRTCAudioManager private(
     wiredHeadsetReceiver = object : BroadcastReceiver() {
 
       override fun onReceive(context: Context, intent: Intent) {
-        val state = intent.getIntExtra("state", STATE_UNPLUGGED)
-        val microphone = intent.getIntExtra("microphone", HAS_NO_MIC)
+        val state = intent.getIntExtra("state", Companion.STATE_UNPLUGGED)
+        val microphone = intent.getIntExtra("microphone", Companion.HAS_NO_MIC)
         val name = intent.getStringExtra("name")
         Log.d(TAG, "BroadcastReceiver.onReceive" + util.AppRTCUtils.getThreadInfo() + ": " + "a=" + intent.getAction() + ", s=" + (if (state == STATE_UNPLUGGED) "unplugged" else "plugged") + ", m=" + (if (microphone == HAS_MIC) "mic" else "no mic") + ", n=" + name + ", sb=" + isInitialStickyBroadcast())
 
-        val hasWiredHeadset = if ((state == STATE_PLUGGED)) true else false
+        val hasWiredHeadset = if ((state == Companion.STATE_PLUGGED)) true else false
         when (state) {
-          STATE_UNPLUGGED -> updateAudioDeviceState(hasWiredHeadset)
-          STATE_PLUGGED -> if (selectedAudioDevice != AudioDevice.WIRED_HEADSET) {
-            updateAudioDeviceState(hasWiredHeadset)
-          } else -> Log.e(TAG, "Invalid state")
+          Companion.STATE_UNPLUGGED -> updateAudioDeviceState(hasWiredHeadset)
+          Companion.STATE_PLUGGED ->
+            if (selectedAudioDevice != AudioDevice.WIRED_HEADSET) {
+              updateAudioDeviceState(hasWiredHeadset)
+            } else -> Log.e(TAG, "Invalid state")
         }
       }
 
