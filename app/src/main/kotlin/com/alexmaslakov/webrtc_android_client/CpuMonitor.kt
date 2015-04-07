@@ -161,7 +161,7 @@ class CpuMonitor {
        * save it in cpuFreq[].
        */
 
-      if (cpuFreq!![i] == 0) {
+      if (cpuFreq!![i] == 0: Long) {
         // We have never found this CPU's max frequency.  Attempt to read it.
         val cpufreqMax = readFreqFromFile(maxPath!![i])
         if (cpufreqMax > 0) {
@@ -185,7 +185,7 @@ class CpuMonitor {
       cpufreqMaxSum += lastSeenMaxFreq
     }
 
-    if (cpufreqMaxSum == 0) {
+    if (cpufreqMaxSum == (0: Long)) {
       Log.e(TAG, "Could not read max frequency for any CPU")
       return false
     }
@@ -217,7 +217,7 @@ class CpuMonitor {
     lastProcStat = procStat
     val allTime = diffRunTime + diffIdleTime
     var percent =
-      if (allTime == 0) 0
+      if (allTime == (0: Long)) 0
       else Math.round(percentFreq * diffRunTime.toDouble() / allTime.toDouble()).toInt()
     percent = Math.max(0, Math.min(percent, 100))
 
@@ -274,8 +274,8 @@ class CpuMonitor {
    * of /proc/stat.
    */
   private fun readIdleAndRunTime(): ProcStat? {
-    var runTime: Long = 0
-    var idleTime: Long = 0
+    var runTime: Long
+    var idleTime: Long
     try {
       val fin = FileReader("/proc/stat")
       try {

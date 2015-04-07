@@ -155,7 +155,10 @@ public class RoomParametersFetcher(private val roomUrl: String, private val room
       val audioConstraints = constraintsFromJSON(getAVConstraints("audio", roomJson.getString("media_constraints")))
       Log.d(TAG, "audioConstraints: " + audioConstraints)
 
-      val params = SignalingParameters(iceServers, initiator, pcConstraints, videoConstraints, audioConstraints, clientId, wssUrl, wssPostUrl, offerSdp, iceCandidates)
+      val params = SignalingParameters(iceServers, initiator, pcConstraints!!, videoConstraints!!,
+        audioConstraints!!, clientId, wssUrl, wssPostUrl, offerSdp!!, iceCandidates!!
+      )
+
       events.onSignalingParametersReady(params)
     } catch (e: JSONException) {
       events.onSignalingParametersError("Room JSON parsing error: " + e.toString())

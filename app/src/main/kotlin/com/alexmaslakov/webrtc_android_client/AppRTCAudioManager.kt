@@ -211,28 +211,40 @@ public class AppRTCAudioManager private(
 
     /** Receiver which handles changes in wired headset availability.  */
     wiredHeadsetReceiver = object : BroadcastReceiver() {
+      private val STATE_UNPLUGGED = 0
+      private val STATE_PLUGGED = 1
+      private val HAS_NO_MIC = 0
+      private val HAS_MIC = 1
 
       override fun onReceive(context: Context, intent: Intent) {
-        val state = intent.getIntExtra("state", Companion.STATE_UNPLUGGED)
-        val microphone = intent.getIntExtra("microphone", Companion.HAS_NO_MIC)
+        val state = intent.getIntExtra("state", STATE_UNPLUGGED)
+        val microphone = intent.getIntExtra("microphone", HAS_NO_MIC)
         val name = intent.getStringExtra("name")
-        Log.d(TAG, "BroadcastReceiver.onReceive" + util.AppRTCUtils.getThreadInfo() + ": " + "a=" + intent.getAction() + ", s=" + (if (state == STATE_UNPLUGGED) "unplugged" else "plugged") + ", m=" + (if (microphone == HAS_MIC) "mic" else "no mic") + ", n=" + name + ", sb=" + isInitialStickyBroadcast())
 
-        val hasWiredHeadset = if ((state == Companion.STATE_PLUGGED)) true else false
+        //todo rf
+        Log.d(
+          TAG,
+          "BroadcastReceiver.onReceive" +
+          util.AppRTCUtils.getThreadInfo() +
+          ": " +
+          "a=" +
+          intent.getAction() +
+          ", s=" +
+          (if (state == STATE_UNPLUGGED) "unplugged" else "plugged") +
+          ", m=" + (if (microphone == HAS_MIC) "mic" else "no mic") +
+          ", n=" +
+          name +
+          ", sb=" + isInitialStickyBroadcast()
+        )
+
+        val hasWiredHeadset = state == STATE_PLUGGED
         when (state) {
-          Companion.STATE_UNPLUGGED -> updateAudioDeviceState(hasWiredHeadset)
-          Companion.STATE_PLUGGED ->
+          STATE_UNPLUGGED -> updateAudioDeviceState(hasWiredHeadset)
+          STATE_PLUGGED ->
             if (selectedAudioDevice != AudioDevice.WIRED_HEADSET) {
               updateAudioDeviceState(hasWiredHeadset)
             } else -> Log.e(TAG, "Invalid state")
         }
-      }
-
-      companion object {
-        private val STATE_UNPLUGGED = 0
-        private val STATE_PLUGGED = 1
-        private val HAS_NO_MIC = 0
-        private val HAS_MIC = 1
       }
     }
 
@@ -251,6 +263,7 @@ public class AppRTCAudioManager private(
     if (wasOn == on) {
       return
     }
+
     audioManager.setSpeakerphoneOn(on)
   }
 
@@ -295,6 +308,7 @@ public class AppRTCAudioManager private(
         audioDevices.add(AudioDevice.EARPIECE)
       }
     }
+
     Log.d(TAG, "audioDevices: " + audioDevices)
 
     // Switch to correct audio device given the list of available audio devices.

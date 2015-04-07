@@ -55,7 +55,7 @@ public class SettingsActivity : Activity(), OnSharedPreferenceChangeListener {
   private var keyPrefDisplayHud: String? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    super<Activity>.onCreate(savedInstanceState)
     keyprefVideoCall = getString(R.string.pref_videocall_key)
     keyprefResolution = getString(R.string.pref_resolution_key)
     keyprefFps = getString(R.string.pref_fps_key)

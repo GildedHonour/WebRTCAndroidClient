@@ -107,7 +107,7 @@ public class HudFragment : Fragment() {
     hudViewConnection!!.setVisibility(visibility)
     hudViewVideoSend!!.setVisibility(visibility)
     hudViewVideoRecv!!.setVisibility(visibility)
-    hudViewBwe!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
+    hudViewBwe!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5: Float)
     hudViewConnection!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
     hudViewVideoSend!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
     hudViewVideoRecv!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)

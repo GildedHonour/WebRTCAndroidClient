@@ -30,9 +30,9 @@ package com.alexmaslakov.webrtc_android_client
 import com.alexmaslakov.webrtc_android_client.RoomParametersFetcher.RoomParametersFetcherEvents
 import com.alexmaslakov.webrtc_android_client.WebSocketChannelClient.WebSocketChannelEvents
 import com.alexmaslakov.webrtc_android_client.WebSocketChannelClient.WebSocketConnectionState
-import com.alexmaslakov.webrtc_android_client.AsyncHttpURLConnection
-import com.alexmaslakov.webrtc_android_client.AsyncHttpURLConnection.AsyncHttpEvents
-import com.alexmaslakov.webrtc_android_client.LooperExecutor
+import com.alexmaslakov.webrtc_android_client.util.AsyncHttpURLConnection
+import com.alexmaslakov.webrtc_android_client.util.AsyncHttpURLConnection.AsyncHttpEvents
+import com.alexmaslakov.webrtc_android_client.util.LooperExecutor
 
 import android.util.Log
 import com.alexmaslakov.webrtc_android_client.util
@@ -166,8 +166,8 @@ public class WebSocketRTCClient(
       Log.w(TAG, "No offer SDP in room response.")
     }
     initiator = signalingParameters.initiator
-    messageUrl = getMessageUrl(connectionParameters, signalingParameters)
-    leaveUrl = getLeaveUrl(connectionParameters, signalingParameters)
+    messageUrl = getMessageUrl(connectionParameters!!, signalingParameters)
+    leaveUrl = getLeaveUrl(connectionParameters!!, signalingParameters)
     Log.d(TAG, "Message URL: " + messageUrl)
     Log.d(TAG, "Leave URL: " + leaveUrl)
     roomState = ConnectionState.CONNECTED
@@ -191,7 +191,7 @@ public class WebSocketRTCClient(
         val json = JSONObject()
         jsonPut(json, "sdp", sdp.description)
         jsonPut(json, "type", "offer")
-        sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString())
+        sendPostMessage(MessageType.MESSAGE, messageUrl!!, json.toString())
         if (connectionParameters!!.loopback) {
           // In loopback mode rename this offer to answer and route it back.
           val sdpAnswer = SessionDescription(SessionDescription.Type.fromCanonicalForm("answer"), sdp.description)
@@ -233,7 +233,7 @@ public class WebSocketRTCClient(
             return
           }
 
-          sendPostMessage(MessageType.MESSAGE, messageUrl, json.toString())
+          sendPostMessage(MessageType.MESSAGE, messageUrl!!, json.toString())
           if (connectionParameters!!.loopback) {
             events.onRemoteIceCandidate(candidate)
           }

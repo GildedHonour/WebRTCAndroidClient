@@ -84,7 +84,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
   var hudFragment: HudFragment? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    super<Activity>.onCreate(savedInstanceState)
     Thread.setDefaultUncaughtExceptionHandler(UnhandledExceptionHandler(this))
 
     // Set window styles for fullscreen-window size. Needs to be done before
@@ -147,8 +147,8 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
     roomConnectionParameters = RoomConnectionParameters(roomUri.toString(), roomId, loopback)
 
     // Send intent arguments to fragments.
-    callFragment.setArguments(intent.getExtras())
-    hudFragment.setArguments(intent.getExtras())
+    callFragment!!.setArguments(intent.getExtras())
+    hudFragment!!.setArguments(intent.getExtras())
     // Activate call and HUD fragments and start the call.
     val ft = getFragmentManager().beginTransaction()
     ft.add(R.id.call_fragment_container, callFragment)
@@ -168,7 +168,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
 
   // Activity interfaces
   override fun onPause() {
-    super.onPause()
+    super<Activity>.onPause()
     videoView!!.onPause()
     activityRunning = false
     if (peerConnectionClient != null) {
@@ -177,7 +177,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
   }
 
   override fun onResume() {
-    super.onResume()
+    super<Activity>.onResume()
     videoView!!.onResume()
     activityRunning = true
     if (peerConnectionClient != null) {
@@ -187,7 +187,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
 
   override fun onDestroy() {
     disconnect()
-    super.onDestroy()
+    super<Activity>.onDestroy()
     if (logToast != null) {
       logToast!!.cancel()
     }
@@ -212,7 +212,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
 
   // Helper functions.
   private fun toggleCallControlFragmentVisibility() {
-    if (!iceConnected || !callFragment.isAdded()) {
+    if (!iceConnected || !callFragment!!.isAdded()) {
       return
     }
     // Show/hide call control fragment
@@ -239,7 +239,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
   }
 
   private fun startCall() {
-    if (appRtcClient == null) {
+    if (appRtcClient!! == null) {
       Log.e(TAG, "AppRTC client is not allocated for a call.")
       return
     }
@@ -247,7 +247,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
 
     // Start room connection.
     logAndToast(getString(R.string.connecting_to, roomConnectionParameters!!.roomUrl))
-    appRtcClient!!.connectToRoom(roomConnectionParameters)
+    appRtcClient!!.connectToRoom(roomConnectionParameters!!)
 
     // Create and audio manager that will take care of audio routing,
     // audio modes, audio device enumeration etc.
@@ -371,7 +371,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
       return
     }
     logAndToast("Creating peer connection, delay=" + delta + "ms")
-    peerConnectionClient!!.createPeerConnection(localRender, remoteRender, signalingParameters)
+    peerConnectionClient!!.createPeerConnection(localRender!!, remoteRender!!, signalingParameters!!)
 
     if (signalingParameters!!.initiator) {
       logAndToast("Creating OFFER...")
@@ -501,7 +501,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
     runOnUiThread(object : Runnable {
       override fun run() {
         if (!isError && iceConnected) {
-          hudFragment.updateEncoderStatistics(reports)
+          hudFragment!!.updateEncoderStatistics(reports)
         }
       }
     })

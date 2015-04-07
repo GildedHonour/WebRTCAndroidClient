@@ -87,7 +87,7 @@ public class CallFragment : Fragment() {
         videoScalingButton!!.setBackgroundResource(R.drawable.ic_action_return_from_full_screen)
         scalingType = ScalingType.SCALE_ASPECT_FILL
       }
-      callEvents!!.onVideoScalingSwitch(scalingType)
+      callEvents!!.onVideoScalingSwitch(scalingType!!)
 
     }
 
