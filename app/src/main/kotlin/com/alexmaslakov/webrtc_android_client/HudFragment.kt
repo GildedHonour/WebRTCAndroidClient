@@ -107,10 +107,10 @@ public class HudFragment : Fragment() {
     hudViewConnection!!.setVisibility(visibility)
     hudViewVideoSend!!.setVisibility(visibility)
     hudViewVideoRecv!!.setVisibility(visibility)
-    hudViewBwe!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5: Float)
-    hudViewConnection!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
-    hudViewVideoSend!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
-    hudViewVideoRecv!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5)
+    hudViewBwe!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5.toFloat())
+    hudViewConnection!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5.toFloat())
+    hudViewVideoSend!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5.toFloat())
+    hudViewVideoRecv!!.setTextSize(TypedValue.COMPLEX_UNIT_PT, 5.toFloat())
   }
 
   private fun getReportMap(report: StatsReport): Map<String, String> {

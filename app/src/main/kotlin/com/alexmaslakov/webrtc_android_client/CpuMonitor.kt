@@ -99,7 +99,7 @@ class CpuMonitor {
   private var initialized = false
   private var maxPath: Array<String>? = null
   private var curPath: Array<String>? = null
-  var lastProcStat: ProcStat
+  var lastProcStat: ProcStat? = null
 
   private inner class ProcStat(val runTime: Long, val idleTime: Long)
 
@@ -124,16 +124,17 @@ class CpuMonitor {
 
 
     cpuFreq = LongArray(cpusPresent)
-    maxPath = arrayOfNulls<String>(cpusPresent)
-    curPath = arrayOfNulls<String>(cpusPresent)
+//    maxPath = arrayOfNulls<String>(cpusPresent)
+    maxPath = Array<String>(cpusPresent, { x -> "" })
+//    curPath = arrayOfNulls<String>(cpusPresent)
+    curPath = Array<String>(cpusPresent, { x -> "" })
     for (i in 0..cpusPresent - 1) {
-      cpuFreq[i] = 0  // Frequency "not yet determined".
-      maxPath[i] = "/sys/devices/system/cpu/cpu" + i + "/cpufreq/cpuinfo_max_freq"
-      curPath[i] = "/sys/devices/system/cpu/cpu" + i + "/cpufreq/scaling_cur_freq"
+//      cpuFreq!![i] = 0  // Frequency "not yet determined".
+//      maxPath!![i] = "/sys/devices/system/cpu/cpu" + i + "/cpufreq/cpuinfo_max_freq"
+//      curPath!![i] = "/sys/devices/system/cpu/cpu" + i + "/cpufreq/scaling_cur_freq"
     }
 
     lastProcStat = ProcStat(0, 0)
-
     initialized = true
   }
 
@@ -166,8 +167,8 @@ class CpuMonitor {
         val cpufreqMax = readFreqFromFile(maxPath!![i])
         if (cpufreqMax > 0) {
           lastSeenMaxFreq = cpufreqMax
-          cpuFreq[i] = cpufreqMax
-          maxPath[i] = null  // Kill path to free its memory.
+//          cpuFreq!![i] = cpufreqMax
+//          maxPath!![i] = ""  // Kill path to free its memory.
         }
       } else {
         lastSeenMaxFreq = cpuFreq!![i]  // A valid, previously read value.
@@ -212,8 +213,8 @@ class CpuMonitor {
       return false
     }
 
-    val diffRunTime = procStat.runTime - lastProcStat.runTime
-    val diffIdleTime = procStat.idleTime - lastProcStat.idleTime
+    val diffRunTime = procStat.runTime - lastProcStat!!.runTime
+    val diffIdleTime = procStat.idleTime - lastProcStat!!.idleTime
     lastProcStat = procStat
     val allTime = diffRunTime + diffIdleTime
     var percent =

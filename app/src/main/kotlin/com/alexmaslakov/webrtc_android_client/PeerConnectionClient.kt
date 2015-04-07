@@ -212,7 +212,7 @@ public class PeerConnectionClient {
       events!!.onPeerConnectionError("Failed to initializeAndroidGlobals")
     }
     factory = PeerConnectionFactory()
-    configureFactory(factory)
+    configureFactory(factory!!)
     Log.d(TAG, "Peer connection factory created.")
   }
 
@@ -314,7 +314,7 @@ public class PeerConnectionClient {
       }
       Log.d(TAG, "Opening camera: " + cameraDeviceName)
       videoCapturer = VideoCapturerAndroid.create(cameraDeviceName)
-      mediaStream!!.addTrack(createVideoTrack(videoCapturer))
+      mediaStream!!.addTrack(createVideoTrack(videoCapturer!!))
     }
 
     mediaStream!!.addTrack(factory!!.createAudioTrack(AUDIO_TRACK_ID, factory!!.createAudioSource(audioConstraints)))
@@ -525,7 +525,7 @@ public class PeerConnectionClient {
     localVideoTrack = factory!!.createVideoTrack(VIDEO_TRACK_ID, videoSource)
     localVideoTrack!!.setEnabled(renderVideo)
     localVideoTrack!!.addRenderer(VideoRenderer(localRender))
-    return localVideoTrack
+    return localVideoTrack!!
   }
 
   private fun drainCandidates() {
@@ -669,7 +669,7 @@ public class PeerConnectionClient {
             if (peerConnection!!.getRemoteDescription() == null) {
               // We've just set our local SDP so time to send it.
               Log.d(TAG, "Local SDP set succesfully")
-              events!!.onLocalDescription(localSdp)
+              events!!.onLocalDescription(localSdp!!)
             } else {
               // We've just set remote description, so drain remote
               // and send local ICE candidates.
@@ -683,7 +683,7 @@ public class PeerConnectionClient {
               // We've just set our local SDP so time to send it, drain
               // remote and send local ICE candidates.
               Log.d(TAG, "Local SDP set succesfully")
-              events!!.onLocalDescription(localSdp)
+              events!!.onLocalDescription(localSdp!!)
               drainCandidates()
             } else {
               // We've just set remote SDP - do nothing for now -

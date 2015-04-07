@@ -53,10 +53,7 @@ import org.webrtc.SessionDescription
  * Messages to other party (with local Ice candidates and answer SDP) can
  * be sent after WebSocket connection is established.
  */
-public class WebSocketRTCClient(
-  private val events: AppRTCClient.SignalingEvents,
-  private val executor: util.LooperExecutor
-): AppRTCClient, WebSocketChannelEvents {
+public class WebSocketRTCClient(private val events: AppRTCClient.SignalingEvents, private val executor: util.LooperExecutor): AppRTCClient, WebSocketChannelEvents {
 
   private enum class ConnectionState {
     NEW
@@ -106,7 +103,7 @@ public class WebSocketRTCClient(
 
   // Connects to room - function runs on a local looper thread.
   private fun connectToRoomInternal() {
-    val connectionUrl = getConnectionUrl(connectionParameters)
+    val connectionUrl = getConnectionUrl(connectionParameters!!)
     Log.d(TAG, "Connect to room: " + connectionUrl)
     roomState = ConnectionState.NEW
     wsClient = WebSocketChannelClient(executor, this)
@@ -125,7 +122,7 @@ public class WebSocketRTCClient(
       }
     }
 
-    RoomParametersFetcher(connectionUrl, null, callbacks).makeRequest()
+    RoomParametersFetcher(connectionUrl, "", callbacks).makeRequest()
   }
 
   // Disconnect from room and send bye messages - runs on a local looper thread.
@@ -133,7 +130,7 @@ public class WebSocketRTCClient(
     Log.d(TAG, "Disconnect. Room state: " + roomState)
     if (roomState == ConnectionState.CONNECTED) {
       Log.d(TAG, "Closing room.")
-      sendPostMessage(MessageType.LEAVE, leaveUrl, null)
+      sendPostMessage(MessageType.LEAVE, leaveUrl!!, null)
     }
     roomState = ConnectionState.CLOSED
     if (wsClient != null) {

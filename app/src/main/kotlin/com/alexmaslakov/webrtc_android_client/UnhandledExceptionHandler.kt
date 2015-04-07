@@ -55,7 +55,7 @@ public class UnhandledExceptionHandler(private val activity: Activity) : Thread.
         val msg = getRecursiveStackTrace(e)
         val errorView = TextView(activity)
         errorView.setText(msg)
-        errorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8)
+        errorView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8.toFloat())
         val scrollingContainer = ScrollView(activity)
         scrollingContainer.addView(errorView)
         Log.e(TAG, title + "\n\n" + msg)
@@ -78,9 +78,10 @@ public class UnhandledExceptionHandler(private val activity: Activity) : Thread.
     private fun getTopLevelCauseMessage(t: Throwable): String {
       var topLevelCause = t
       while (topLevelCause.getCause() != null) {
-        topLevelCause = topLevelCause.getCause()
+        topLevelCause = topLevelCause.getCause()!!
       }
-      return topLevelCause.getMessage()
+
+      return topLevelCause.getMessage()!!
     }
 
     // Returns a human-readable String of the stacktrace in |t|, recursively

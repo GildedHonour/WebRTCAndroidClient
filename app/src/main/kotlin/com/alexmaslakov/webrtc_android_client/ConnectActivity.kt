@@ -123,7 +123,7 @@ public class ConnectActivity : Activity() {
     roomEditText!!.requestFocus()
 
     roomListView = findViewById(R.id.room_listview) as ListView
-    roomListView!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
+//    roomListView!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
 
     addRoomButton = findViewById(R.id.add_room_button) as ImageButton
     addRoomButton!!.setOnClickListener(addRoomListener)

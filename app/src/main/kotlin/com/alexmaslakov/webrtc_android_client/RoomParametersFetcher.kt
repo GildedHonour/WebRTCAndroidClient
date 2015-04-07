@@ -52,7 +52,11 @@ import java.util.Scanner
  * AsyncTask that converts an AppRTC room URL into the set of signaling
  * parameters to use with that room.
  */
-public class RoomParametersFetcher(private val roomUrl: String, private val roomMessage: String, private val events: RoomParametersFetcher.RoomParametersFetcherEvents) {
+public class RoomParametersFetcher(
+  private val roomUrl: String,
+  private val roomMessage: String,
+  private val events: RoomParametersFetcher.RoomParametersFetcherEvents
+) {
   private var httpConnection: AsyncHttpURLConnection? = null
 
   /**

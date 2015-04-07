@@ -264,7 +264,7 @@ public class WebSocketChannelClient(
           state = WebSocketConnectionState.CONNECTED
           // Check if we have pending register request.
           if (roomID != null && clientID != null) {
-            register(roomID, clientID)
+            register(roomID!!, clientID!!)
           }
         }
       })

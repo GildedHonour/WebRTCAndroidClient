@@ -240,10 +240,12 @@ public class AppRTCAudioManager private(
         val hasWiredHeadset = state == STATE_PLUGGED
         when (state) {
           STATE_UNPLUGGED -> updateAudioDeviceState(hasWiredHeadset)
-          STATE_PLUGGED ->
+          STATE_PLUGGED -> {
             if (selectedAudioDevice != AudioDevice.WIRED_HEADSET) {
               updateAudioDeviceState(hasWiredHeadset)
-            } else -> Log.e(TAG, "Invalid state")
+            }
+          }
+          else -> Log.e(TAG, "Invalid state")
         }
       }
     }
