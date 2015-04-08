@@ -157,16 +157,19 @@ public class AppRTCProximitySensor private(
       // Added in API level 9.
       info.append(", min delay: " + proximitySensor!!.getMinDelay())
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-      // Added in API level 20.
-      info.append(", type: " + proximitySensor!!.getStringType())
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+    if (Build.VERSION.SDK_INT >= 20) { //todo hack
+        // Added in API level 20.
+        info.append(", type: " + proximitySensor!!.getStringType())
     }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       // Added in API level 21.
-      info.append(", max delay: " + proximitySensor!!.getMaxDelay())
-      info.append(", reporting mode: " + proximitySensor!!.getReportingMode())
-      info.append(", isWakeUpSensor: " + proximitySensor!!.isWakeUpSensor())
+      info.append(", max delay: ${proximitySensor!!.getMaxDelay()}")
+      info.append(", reporting mode: ${proximitySensor!!.getReportingMode()}")
+      info.append(", isWakeUpSensor: ${proximitySensor!!.isWakeUpSensor()}")
     }
+
     Log.d(tag, info.toString())
   }
 

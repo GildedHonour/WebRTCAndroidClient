@@ -121,9 +121,9 @@ public class ConnectActivity : Activity() {
     roomListView!!.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
 
     addRoomButton = findViewById(R.id.add_room_button) as ImageButton
-    addRoomButton!!.setOnClickListener(addRoomListener)
+    addRoomButton!!.setOnClickListener(addRoomListener())
     removeRoomButton = findViewById(R.id.remove_room_button) as ImageButton
-    removeRoomButton!!.setOnClickListener(removeRoomListener)
+    removeRoomButton!!.setOnClickListener(removeRoomListener())
     connectButton = findViewById(R.id.connect_button) as ImageButton
     connectButton!!.setOnClickListener(connectListener)
     connectLoopbackButton = findViewById(R.id.connect_loopback_button) as ImageButton
@@ -228,14 +228,16 @@ public class ConnectActivity : Activity() {
     val roomUrl = sharedPref!!.getString(keyprefRoomServerUrl, getString(R.string.pref_room_server_url_default))
 
     // Video call enabled flag.
-    val videoCallEnabled = sharedPref!!.getBoolean(keyprefVideoCallEnabled, java.lang.Boolean.valueOf(getString(R.string.pref_videocall_default)))
+    val videoCallEnabled = sharedPref!!.getBoolean(keyprefVideoCallEnabled!!,
+      java.lang.Boolean.valueOf(getString(R.string.pref_videocall_default))
+    )
 
     // Get default codecs.
     val videoCodec = sharedPref!!.getString(keyprefVideoCodec, getString(R.string.pref_videocodec_default))
     val audioCodec = sharedPref!!.getString(keyprefAudioCodec, getString(R.string.pref_audiocodec_default))
 
     // Check HW codec flag.
-    val hwCodec = sharedPref!!.getBoolean(keyprefHwCodecAcceleration, java.lang.Boolean.valueOf(getString(R.string.pref_hwcodec_default)))
+    val hwCodec = sharedPref!!.getBoolean(keyprefHwCodecAcceleration!!, java.lang.Boolean.valueOf(getString(R.string.pref_hwcodec_default)))
 
     // Get video resolution from settings.
     var videoWidth = 0
@@ -284,10 +286,12 @@ public class ConnectActivity : Activity() {
     }
 
     // Test if CpuOveruseDetection should be disabled. By default is on.
-    val cpuOveruseDetection = sharedPref!!.getBoolean(keyprefCpuUsageDetection, java.lang.Boolean.valueOf(getString(R.string.pref_cpu_usage_detection_default)))
+    val cpuOveruseDetection = sharedPref!!.getBoolean(keyprefCpuUsageDetection!!,
+      java.lang.Boolean.valueOf(getString(R.string.pref_cpu_usage_detection_default))
+    )
 
     // Check statistics display option.
-    val displayHud = sharedPref!!.getBoolean(keyprefDisplayHud, java.lang.Boolean.valueOf(getString(R.string.pref_displayhud_default)))
+    val displayHud = sharedPref!!.getBoolean(keyprefDisplayHud!!, java.lang.Boolean.valueOf(getString(R.string.pref_displayhud_default)))
 
     // Start AppRTCDemo activity.
     Log.d(TAG, "Connecting to room " + roomId + " at URL " + roomUrl)
@@ -328,7 +332,7 @@ public class ConnectActivity : Activity() {
     return false
   }
 
-  private val addRoomListener = object : OnClickListener {
+  private fun addRoomListener() = object : OnClickListener {
     override fun onClick(view: View) {
       val newRoom = roomEditText!!.getText().toString()
       if (newRoom.length() > 0 && !roomList!!.contains(newRoom)) {
@@ -338,7 +342,7 @@ public class ConnectActivity : Activity() {
     }
   }
 
-  private val removeRoomListener = object : OnClickListener {
+  private fun removeRoomListener() = object : OnClickListener {
     override fun onClick(view: View) {
       val selectedRoom = getSelectedItem()
       if (selectedRoom != null) {
