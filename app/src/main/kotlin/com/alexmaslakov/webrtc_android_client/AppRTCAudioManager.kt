@@ -100,7 +100,7 @@ public class AppRTCAudioManager private(
     }
   }
 
-  {
+  init {
     audioManager = (apprtcContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager)
 
     // Create and initialize the proximity sensor.
@@ -221,19 +221,11 @@ public class AppRTCAudioManager private(
         val microphone = intent.getIntExtra("microphone", HAS_NO_MIC)
         val name = intent.getStringExtra("name")
 
-        //todo rf
         Log.d(
           TAG,
-          "BroadcastReceiver.onReceive" +
-          util.AppRTCUtils.getThreadInfo() +
-          ": " +
-          "a=" +
-          intent.getAction() +
-          ", s=" +
-          (if (state == STATE_UNPLUGGED) "unplugged" else "plugged") +
-          ", m=" + (if (microphone == HAS_MIC) "mic" else "no mic") +
-          ", n=" +
-          name +
+          "BroadcastReceiver.onReceive ${util.AppRTCUtils.getThreadInfo()}: a=${intent.getAction()}" +
+          ", s=${(if (state == STATE_UNPLUGGED) "unplugged" else "plugged")}" +
+          ", m=${(if (microphone == HAS_MIC) "mic" else "no mic")}, n=${name}" +
           ", sb=" + isInitialStickyBroadcast()
         )
 
@@ -339,11 +331,7 @@ public class AppRTCAudioManager private(
       Log.e(TAG, "Invalid device list")
     }
 
-    if (onStateChangeListener != null) {
-      // Run callback to notify a listening client. The client can then
-      // use public getters to query the new state.
-      onStateChangeListener.run()
-    }
+    onStateChangeListener?.run()
   }
 
   companion object {

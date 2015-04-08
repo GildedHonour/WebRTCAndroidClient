@@ -35,6 +35,7 @@ import com.alexmaslakov.webrtc_android_client.util.LooperExecutor
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.FragmentTransaction
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
@@ -45,7 +46,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager.LayoutParams
 import android.widget.Toast
-import com.alexmaslakov.webrtc_android_client.util
+import android.os.Vibrator
 
 import org.webrtc.IceCandidate
 import org.webrtc.SessionDescription
@@ -54,6 +55,7 @@ import org.webrtc.VideoRenderer
 import org.webrtc.VideoRendererGui
 import org.webrtc.VideoRendererGui.ScalingType
 
+import com.alexmaslakov.webrtc_android_client.util
 /**
  * Activity for peer connection call setup, call waiting
  * and call view.
@@ -104,11 +106,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
     hudFragment = HudFragment()
 
     // Create video renderers.
-    VideoRendererGui.setView(videoView, object : Runnable {
-      override fun run() {
-        createPeerConnectionFactory()
-      }
-    })
+    VideoRendererGui.setView(videoView,  { createPeerConnectionFactory() })
     remoteRender = VideoRendererGui.create(REMOTE_X, REMOTE_Y, REMOTE_WIDTH, REMOTE_HEIGHT, scalingType, false)
     localRender = VideoRendererGui.create(LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING, LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING, scalingType, true)
 
@@ -138,7 +136,20 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
       return
     }
     val loopback = intent.getBooleanExtra(EXTRA_LOOPBACK, false)
-    peerConnectionParameters = PeerConnectionParameters(intent.getBooleanExtra(EXTRA_VIDEO_CALL, true), loopback, intent.getIntExtra(EXTRA_VIDEO_WIDTH, 0), intent.getIntExtra(EXTRA_VIDEO_HEIGHT, 0), intent.getIntExtra(EXTRA_VIDEO_FPS, 0), intent.getIntExtra(EXTRA_VIDEO_BITRATE, 0), intent.getStringExtra(EXTRA_VIDEOCODEC), intent.getBooleanExtra(EXTRA_HWCODEC_ENABLED, true), intent.getIntExtra(EXTRA_AUDIO_BITRATE, 0), intent.getStringExtra(EXTRA_AUDIOCODEC), intent.getBooleanExtra(EXTRA_CPUOVERUSE_DETECTION, true))
+    peerConnectionParameters = PeerConnectionParameters(
+      intent.getBooleanExtra(EXTRA_VIDEO_CALL, true),
+      loopback,
+      intent.getIntExtra(EXTRA_VIDEO_WIDTH, 0),
+      intent.getIntExtra(EXTRA_VIDEO_HEIGHT, 0),
+      intent.getIntExtra(EXTRA_VIDEO_FPS, 0),
+      intent.getIntExtra(EXTRA_VIDEO_BITRATE, 0),
+      intent.getStringExtra(EXTRA_VIDEOCODEC),
+      intent.getBooleanExtra(EXTRA_HWCODEC_ENABLED, true),
+      intent.getIntExtra(EXTRA_AUDIO_BITRATE, 0),
+      intent.getStringExtra(EXTRA_AUDIOCODEC),
+      intent.getBooleanExtra(EXTRA_CPUOVERUSE_DETECTION, true)
+    )
+
     commandLineRun = intent.getBooleanExtra(EXTRA_CMDLINE, false)
     runTimeMs = intent.getIntExtra(EXTRA_RUNTIME, 0)
 
@@ -239,7 +250,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
   }
 
   private fun startCall() {
-    if (appRtcClient!! == null) {
+    if (appRtcClient == null) {
       Log.e(TAG, "AppRTC client is not allocated for a call.")
       return
     }
@@ -370,7 +381,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
       Log.w(TAG, "Room is connected, but EGL context is not ready yet.")
       return
     }
-    logAndToast("Creating peer connection, delay=" + delta + "ms")
+    logAndToast("Creating peer connection, delay=${delta}ms")
     peerConnectionClient!!.createPeerConnection(localRender!!, remoteRender!!, signalingParameters!!)
 
     if (signalingParameters!!.initiator) {
@@ -393,14 +404,13 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
         }
       }
     }
+
+    val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    v.vibrate(500)
   }
 
   override fun onConnectedToRoom(params: SignalingParameters) {
-    runOnUiThread(object : Runnable {
-      override fun run() {
-        onConnectedToRoomInternal(params)
-      }
-    })
+    runOnUiThread({ onConnectedToRoomInternal(params) })
   }
 
   override fun onRemoteDescription(sdp: SessionDescription) {
@@ -411,7 +421,7 @@ public class CallActivity : Activity(), AppRTCClient.SignalingEvents, PeerConnec
           Log.e(TAG, "Received remote SDP for non-initilized peer connection.")
           return
         }
-        logAndToast("Received remote " + sdp.type + ", delay=" + delta + "ms")
+        logAndToast("Received remote ${sdp.type}, delay=${delta}ms")
         peerConnectionClient!!.setRemoteDescription(sdp)
         if (!signalingParameters!!.initiator) {
           logAndToast("Creating ANSWER...")

@@ -85,8 +85,8 @@ public trait AppRTCClient {
     val clientId: String,
     val wssUrl: String,
     val wssPostUrl: String,
-    val offerSdp: SessionDescription,
-    val iceCandidates: List<IceCandidate>
+    val offerSdp: SessionDescription?,
+    val iceCandidates: List<IceCandidate>?
   )
 
   /**

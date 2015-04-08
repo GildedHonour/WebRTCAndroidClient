@@ -43,12 +43,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.inputmethod.EditorInfo
 import android.webkit.URLUtil
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 
 import org.json.JSONArray
 import org.json.JSONException
@@ -123,7 +118,7 @@ public class ConnectActivity : Activity() {
     roomEditText!!.requestFocus()
 
     roomListView = findViewById(R.id.room_listview) as ListView
-//    roomListView!!.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
+    roomListView!!.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE)
 
     addRoomButton = findViewById(R.id.add_room_button) as ImageButton
     addRoomButton!!.setOnClickListener(addRoomListener)
